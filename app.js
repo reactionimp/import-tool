@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const leftPad = require("left-pad");
 const objectId = require("objectid");
+const stripTags = require("striptags");
 const Spinner = require("cli-spinner").Spinner;
 
 const spinner = new Spinner("Processing Magento CSV data... %s");
@@ -62,7 +63,7 @@ parser.on("readable", () => {
       shopId: "J8Bhq3uTtdgwZx3rz",
       vendor: tempBrand,
       title: row.name,
-      description: row.description,
+      description: stripTags(row.description),
       "price.range": row.price,
       "price.min": parseFloat(row.price),
       "price.max": parseFloat(row.price),
