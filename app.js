@@ -5,6 +5,9 @@ const leftPad = require("left-pad");
 const objectId = require("objectid");
 const stripTags = require("striptags");
 const Spinner = require("cli-spinner").Spinner;
+const Entities = require('html-entities').XmlEntities;
+
+const entities = new Entities();
 
 const spinner = new Spinner("Processing Magento CSV data... %s");
 spinner.setSpinnerString('|/-\\');
@@ -98,13 +101,13 @@ parser.on("readable", () => {
 });
 
 parser.on("finish", () => {
-  fs.writeFile("data.json", JSON.stringify(products, null, 2), (err) => {
+  fs.writeFile("Products.json", JSON.stringify(products, null, 2).replace(new RegExp(/&nbsp;/gi), ""), (err) => {
     spinner.stop();
 
     if (err) {
-      console.error(`An error happened when saving data.json: ${err}`);
+      console.error(`An error happened when saving Products.json: ${err}`);
     } else {
-      console.log(`\n✅  data.json saved!`);
+      console.log(`\n✅  Products.json saved!`);
     }
   });
 });
