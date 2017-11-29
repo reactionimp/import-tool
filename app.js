@@ -151,7 +151,7 @@ parser.on("readable", () => {
         createdAt: {
           "$date": new Date()
         },
-        weight: 1,
+        weight: parseInt(row.weight) ? parseInt(row.weight) : 1,
         shopId: "J8Bhq3uTtdgwZx3rz",
         taxable: true,
         type: "variant"
