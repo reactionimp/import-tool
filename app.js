@@ -84,10 +84,13 @@ parser.on("readable", () => {
     googleProductTaxonomy = extractAttributeFromString(additionalAttributes, "google_product_taxonomy");
     customLabel0 = extractAttributeFromString(additionalAttributes, "custom_label_attribute");
     customLabel1 = extractAttributeFromString(additionalAttributes, "custom_label_attribute2");
-    specialPrice = extractAttributeFromString(additionalAttributes, "special_price");
     metaTitle = extractAttributeFromString(additionalAttributes, "meta_title");
     productSpecs = extractAttributeFromString(additionalAttributes, "product_specs");
     energyStar = extractAttributeFromString(additionalAttributes, "energy_star_badge2");
+
+    if (typeof keywords === "string") {
+      keywords = [ keywords ];
+    }
 
     if (brand && targettedBrands.find((currentBrand, brandIndex, brands) => brand.toLowerCase() === currentBrand.toLowerCase())) { 
 
@@ -116,7 +119,6 @@ parser.on("readable", () => {
         createdAt: {
           "$date": new Date()
         },
-        sku: row.sku,
         // Custom attributes begin here
         freeShipping: freeShipping && freeShipping.toLowerCase() === "yes" ? true : false,
         shippingTime,
@@ -130,31 +132,33 @@ parser.on("readable", () => {
         googleProductTaxonomy,
         customLabel0,
         customLabel1,
-        specialPrice: specialPrice && specialPrice.toLowerCase() === "yes" ? true : false,
         displayActualPrice: row.msrp_display_actual_price_type,
         metaTitle: row.meta_title,
         metaDescription: row.meta_description,
-        metaRobots: row.meta_keywords.split(", "),
+        metaKeywords: row.meta_keywords.split(", "),
         productSpecs,
-        energyStar: energyStar && energyStar.toLowerCase() === "yes" ? true : false
+        energyStar: energyStar && energyStar.toLowerCase() === "yes" ? true : false,
       });
-      
+     
       products.push({
         _id: objectId().toString(),
         ancestors: [ tempId ],
         title: row.name,
         price: parseFloat(row.price),
+        specialPrice: parseFloat(row.special_price) ? parseFloat(row.special_price) : parseFloat(row.price),
         inventoryManagement: true,
         inventoryPolicy: true,
         inventoryQuantity: 15,
         isVisible: true,
+        isDeleted: false,
         createdAt: {
           "$date": new Date()
         },
         weight: parseInt(row.weight) ? parseInt(row.weight) : 1,
         shopId: "J8Bhq3uTtdgwZx3rz",
         taxable: true,
-        type: "variant"
+        type: "variant",
+        sku: row.sku
       });
     }
   }
